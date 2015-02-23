@@ -1206,3 +1206,10 @@ QUOTES SELECT * FROM AUTHORS [42000-185]
 02-22 16:58:06 jdbc[3]: exception
 org.h2.jdbc.JdbcSQLException: Table "USERS_QUOTES" not found; SQL statement:
 CREATE INDEX user_id_index ON users_quotes (user_id) [42102-182]
+02-23 21:33:37 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Syntax error in SQL statement "SELECT *
+FROM CATEGORIES
+WHERE ID = ?,[*]? "; SQL statement:
+SELECT *
+FROM categories
+WHERE id = ?,? [42000-182]

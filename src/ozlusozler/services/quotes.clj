@@ -54,6 +54,30 @@
     []
     (rand-nth quotes)))
 
+
+(defn- populate-author [quote]
+  "Reads the author_id from the quote and appends an author node to the quote"
+  (let [author (authors/author-by-id (:author_id quote))]
+    (if (not (nil? author))
+      (dissoc (conj quote {:author author}) :author_id)
+      quote)))
+
+
+(defn- populate-categories [quote]
+  (let [category-ids (categories/categories-by-quote (:id quote))
+        categories   (map #(categories/category-by-id (:category_id %)) category-ids)]
+    (if (not (nil? categories))
+      (conj quote {:categories categories})
+      categories)))
+
+
+(defn- set-display-stats! [quote user-hash]
+  "Bu quote'un bu kullanici icin gosterim yapildigina dair kayit atar"
+  ;; TODO: quotes/display_count + 1
+  ;; TODO: users_quotes tablosuna yeni bir satir ekle
+  ;; TODO: stats_by_date tablosuna yeni bir satir ekle veya satir zaten varsa :display_count + 1 yap
+  )
+
 ;; PUBLIC FUNCTIONS
 
 (defn save-quote! [quote author category]
@@ -69,11 +93,18 @@
 
 (defn get-quote [user-hash]
   "Find a quote to be displayed for this specific user"
-  (let [unreported (filter-reported (if (env :dev) (fn-quotes) (memo-quotes)))
-        unseen (filter-seen unreported user-hash)]
-    (choose-best unseen)))
+
+  ;; TODO: bu ip ve hash mevzuyu abuse ediyor mu kontrol et, gerekliyse yasakla
+
+  (let [unreported   (filter-reported (if (env :dev) (fn-quotes) (memo-quotes)))
+        unseen       (filter-seen unreported user-hash)
+        quote        (choose-best unseen)
+        _            (set-display-stats! quote user-hash)
+        author-added (populate-author quote)
+        cats-added   (populate-categories author-added)]
+    cats-added))
 
 
 ; (get-quote "hash")
 
-; (save-quote! "There is no spoon 3" "Master Yoda" "Wisdom")
+; (save-quote! "There is no spoon 6" "Master Yoda 2" "Wisdom")

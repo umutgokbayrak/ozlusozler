@@ -19,3 +19,7 @@
     (if (empty? quotes-seen)
       []
       (map #(:quote_id %) quotes-seen))))
+
+(defn land-on-site [user-hash]
+  "TODO: users tablosunda visit_count ve last_visit'i update et."
+  )

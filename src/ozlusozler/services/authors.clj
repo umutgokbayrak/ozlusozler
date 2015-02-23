@@ -8,6 +8,9 @@
 (defn id-by-name [author]
   (let [id (:id (first (find-author-by-name db-spec author)))]
     (if (nil? id)
-      (first (vals (save-author<! db-spec author "" "" nil)))
+      (first (vals (save-author<! db-spec author "" "" "")))
       id)))
 
+
+(defn author-by-id [id]
+  (first (find-author-by-id db-spec id)))

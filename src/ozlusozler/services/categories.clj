@@ -24,3 +24,12 @@
   "Bir quote bir kategoriye giriyorsa, onu o kategoriye assign eder"
   (let [category_id (id-by-name category)]
     (save-quote-category-pair! quote-id category_id)))
+
+
+(defn categories-by-quote [quote-id]
+  "Bir quote'un dahil oldugu tum kategorileri getirir."
+  (get-quote-categories db-spec quote-id))
+
+(defn category-by-id [id]
+  "Id'den kategoriyi dondurur."
+  (find-category-by-id db-spec id))

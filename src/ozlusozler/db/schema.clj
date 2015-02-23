@@ -58,7 +58,7 @@
     [:author_name "varchar(255) NOT NULL"]
     [:author_info "varchar(4000) NOT NULL DEFAULT ''"]
     [:wiki_url "varchar(400) NOT NULL"]
-    [:photo_data :blob]))
+    [:photo_url "varchar(400) NOT NULL"]))
   (sql/db-do-prepared db-spec "CREATE UNIQUE INDEX author_name_index ON authors (author_name)"))
 
 

@@ -5,6 +5,13 @@ FROM categories
 WHERE category_name = :category_name
 
 
+-- name: find-category-by-id
+-- Finds category by id
+SELECT *
+FROM categories
+WHERE id = :id
+
+
 -- name: save-category<!
 -- Save the category and return the id
 INSERT INTO categories
@@ -27,3 +34,10 @@ FROM quote_categories
 WHERE
 quote_id = :quote_id AND
 category_id = :category_id
+
+-- name: get-quote-categories
+-- Checks to see if there is a quote category pair
+SELECT *
+FROM quote_categories
+WHERE
+quote_id = :quote_id
