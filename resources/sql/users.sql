@@ -33,3 +33,20 @@ WHERE id = :id
 SELECT *
 FROM users_quotes
 WHERE user_id = :user_id
+
+-- name: count-users-quotes
+-- Bu user ve quote ikilisi var mi kontrol etmek icin kullanilir.
+SELECT count(*) as num
+FROM users_quotes
+WHERE
+user_id = :user_id AND
+quote_id = :quote_id
+
+
+-- name: save-users-quotes!
+-- Returns a list of quotes user seen
+INSERT INTO users_quotes
+(user_id, quote_id, skip_flag, like_flag, share_flag, report_flag)
+VALUES
+(:user_id, :quote_id, :skip_flag, :like_flag, :share_flag, :report_flag)
+

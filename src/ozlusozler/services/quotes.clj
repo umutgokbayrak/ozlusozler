@@ -48,13 +48,6 @@
       filtered)))
 
 
-(defn- choose-best [quotes]
-  "TODO: Bu metod basit bir recommendation engine ile replace edilmeli"
-  (if (empty? quotes)
-    []
-    (rand-nth quotes)))
-
-
 (defn- populate-author [quote]
   "Reads the author_id from the quote and appends an author node to the quote"
   (let [author (authors/author-by-id (:author_id quote))]
@@ -73,10 +66,42 @@
 
 (defn- set-display-stats! [quote user-hash]
   "Bu quote'un bu kullanici icin gosterim yapildigina dair kayit atar"
-  ;; TODO: quotes/display_count + 1
-  ;; TODO: users_quotes tablosuna yeni bir satir ekle
-  ;; TODO: stats_by_date tablosuna yeni bir satir ekle veya satir zaten varsa :display_count + 1 yap
-  )
+  (let [display-count-new (+ (:display_count quote) 1)
+        user-id (users/user-id-by-hash user-hash)]
+
+    ; eger bu user id yoksa, henuz user yaratilmamistir.
+    (when (nil? user-id)
+      (users/new-user-with-hash user-hash))
+
+    ; quote'un gosterim sayisi bu kullanici icin bir arttirilir.
+    (users/set-displayed-for-user! (:id quote) user-hash)
+
+    ; quote'un gosterim sayisi tum kullanicilar icin bir arttirilir.
+    (update-quote-display-count! db-spec display-count-new (:id quote))
+
+    ; TODO: stats_by_date tablosuna yeni bir satir ekle veya satir zaten varsa :display_count + 1 yap
+
+    ; display_count bir artti. Bu yeni sayiyi geri donduruyoruz
+    (assoc quote :display_count display-count-new)))
+
+
+(defn- choose-best [quotes fallback-quotes]
+  "Bu quote'lardan en yuksek begeni almis olanina gore sort et ve birini sec"
+  (if (not (empty? quotes))
+    (do
+      (let [sorted-quotes
+            (sort-by
+             #(let [like-point (* (:like_count %) 2)
+                    display-point (:display_count %)
+                    boosted-point (if (:boosted %) 5 0)
+                    share-point (* (:share_count %) 3)
+                    skip-point (* (:skip_count %) -1)
+                    report-point (* (:report_count %) -3)]
+                (+ like-point display-point boosted-point share-point skip-point report-point))
+             > (shuffle quotes))]
+        (rand-nth (take 15 sorted-quotes))))
+    fallback-quotes))
+
 
 ;; PUBLIC FUNCTIONS
 
@@ -94,17 +119,20 @@
 (defn get-quote [user-hash]
   "Find a quote to be displayed for this specific user"
 
+  ;; TODO: category id verdiyse buna gore filtrele
+  ;; TODO: author id verdiyse buna gore filtrele
   ;; TODO: bu ip ve hash mevzuyu abuse ediyor mu kontrol et, gerekliyse yasakla
 
-  (let [unreported   (filter-reported (if (env :dev) (fn-quotes) (memo-quotes)))
+  (let [fallback     (if (env :dev) (fn-quotes) (memo-quotes))
+        unreported   (filter-reported fallback)
         unseen       (filter-seen unreported user-hash)
-        quote        (choose-best unseen)
-        _            (set-display-stats! quote user-hash)
-        author-added (populate-author quote)
+        quote        (choose-best unseen fallback)
+        quote-new    (set-display-stats! quote user-hash)
+        author-added (populate-author quote-new)
         cats-added   (populate-categories author-added)]
     cats-added))
 
 
-; (get-quote "hash")
+; (repeatedly 10 #(get-quote "hash2"))
 
 ; (save-quote! "There is no spoon 6" "Master Yoda 2" "Wisdom")
