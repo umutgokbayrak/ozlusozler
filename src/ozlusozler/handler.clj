@@ -11,6 +11,7 @@
             [taoensso.timbre.appenders.rotor :as rotor]
             [selmer.parser :as parser]
             [environ.core :refer [env]]
+            [ozlusozler.db.schema :as schema]
             [cronj.core :as cronj]))
 
 (defroutes base-routes

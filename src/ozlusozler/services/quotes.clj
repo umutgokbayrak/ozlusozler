@@ -48,6 +48,29 @@
       filtered)))
 
 
+(defn- filter-by-category [quotes category-id]
+  "Quote listesi icerisinde bu kategoriden olanlari filtreler
+  TODO: performansini toparlamak gerekiyor."
+  (if (not (nil? category-id))
+    (filter (fn [quote]
+              (let [category-ids (map #(:category_id %) (categories/categories-by-quote (:id quote)))]
+                (contains? (set category-ids) category-id )))
+            quotes)
+    quotes))
+
+
+(defn- filter-by-author [quotes author-id]
+  "Quote listesi icerisinde bu yazardan olanlari filtreler"
+  (if (not (nil? author-id))
+    (filter #(= (:author_id %) author-id) quotes)
+    quotes))
+
+
+(defn- filter-params [quotes category-id author-id]
+  "Filters quotes with the specified ctegory and author id"
+  (filter-by-category (filter-by-author quotes author-id) category-id))
+
+
 (defn- populate-author [quote]
   "Reads the author_id from the quote and appends an author node to the quote"
   (let [author (authors/author-by-id (:author_id quote))]
@@ -116,14 +139,15 @@
       (categories/assign-category-to-quote quote-id category))))
 
 
-(defn get-quote [user-hash]
+(defn get-quote [user-hash & params]
   "Find a quote to be displayed for this specific user"
 
   ;; TODO: category id verdiyse buna gore filtrele
   ;; TODO: author id verdiyse buna gore filtrele
   ;; TODO: bu ip ve hash mevzuyu abuse ediyor mu kontrol et, gerekliyse yasakla
 
-  (let [fallback     (if (env :dev) (fn-quotes) (memo-quotes))
+  (let [all-quotes   (if (env :dev) (fn-quotes) (memo-quotes))
+        fallback     (filter-params all-quotes (:category-id (first params)) (:author-id (first params)))
         unreported   (filter-reported fallback)
         unseen       (filter-seen unreported user-hash)
         quote        (choose-best unseen fallback)
@@ -131,6 +155,9 @@
         author-added (populate-author quote-new)
         cats-added   (populate-categories author-added)]
     cats-added))
+
+; (get-quote "hash2" {:category-id 6})
+
 
 
 ; (repeatedly 10 #(get-quote "hash2"))

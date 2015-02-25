@@ -159,7 +159,7 @@
     ["FOREIGN KEY (banned_user_id) REFERENCES USERS(id) ON DELETE CASCADE"])))
 
 
-(defn- create-tables
+(defn create-tables
   "creates the database tables used by the application"
   []
 ;  (drop-tables)
