@@ -1,3 +1,8 @@
+-- name: get-all-quote-categories
+-- Gets all quote categories
+SELECT *
+FROM quote_categories
+
 -- name: find-category-by-name
 -- Finds category by name
 SELECT *

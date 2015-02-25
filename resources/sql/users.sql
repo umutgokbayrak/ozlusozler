@@ -3,10 +3,12 @@
 SELECT *
 FROM users
 
+
 -- name: user-count
 -- Counts all the users.
 SELECT count(*) AS count
 FROM users
+
 
 -- name: save-user<!
 -- Creates a new user
@@ -15,11 +17,24 @@ INSERT INTO users
 VALUES
 (:hash_string, :visit_count, :first_visit_date, :last_visit_date, :fast_forward_count)
 
+
+-- name: update-user-by-hash!
+-- updates a user record
+UPDATE users
+SET
+visit_count = :visit_count,
+last_visit_date = :last_visit_date,
+fast_forward_count = :fast_forward_count
+WHERE
+hash_string = :hash_string
+
+
 -- name: find-user-by-hash
 -- Finds user by md5 hash
 SELECT *
 FROM users
 WHERE hash_string = :hash_string
+
 
 -- name: find-user-by-id
 -- Finds user by id
@@ -33,6 +48,7 @@ WHERE id = :id
 SELECT *
 FROM users_quotes
 WHERE user_id = :user_id
+
 
 -- name: count-users-quotes
 -- Bu user ve quote ikilisi var mi kontrol etmek icin kullanilir.

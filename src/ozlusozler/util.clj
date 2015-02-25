@@ -22,3 +22,10 @@
                 (.toString (java.util.UUID/randomUUID))
                 (first txt))]
     (digest/md5 plain)))
+
+
+(defn day-string [date]
+  (.format
+   (java.text.SimpleDateFormat. "yyyy-MM-dd")
+   (java.util.Date.
+    (.getTime date))))

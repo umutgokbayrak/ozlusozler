@@ -1213,3 +1213,62 @@ WHERE ID = ?,[*]? "; SQL statement:
 SELECT *
 FROM categories
 WHERE id = ?,? [42000-182]
+02-25 21:58:24 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Data conversion error converting "hash"; SQL statement:
+SELECT *
+FROM users
+WHERE hash_string = ? [22018-182]
+02-25 21:59:21 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Data conversion error converting "hash"; SQL statement:
+SELECT *
+FROM users
+WHERE hash_string = ? [22018-182]
+02-25 21:59:42 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Data conversion error converting "83dd9511378413ccf67efdc0936d3604"; SQL statement:
+SELECT *
+FROM users
+WHERE hash_string = ? [22018-182]
+02-25 22:59:07 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Syntax error in SQL statement "INSERT INTO STATS_BY_DATE
+(QUOTE_ID, DISPLAY_DATE, SKIP_COUNT, DISPLAY_COUNT, SHARE_COUNT, LIKE_COUNT, REPORT_COUNT)
+VALUES
+(?, ?, ?, ?, ?, ?, ?)
+
+
+       ([*]? STATS)
+       DISPLAY-NEW
+       (? STATS)
+       (? STATS)
+       (? STATS) "; SQL statement:
+INSERT INTO stats_by_date
+(quote_id, display_date, skip_count, display_count, share_count, like_count, report_count)
+VALUES
+(?, ?, ?, ?, ?, ?, ?)
+
+
+       (? stats)
+       display-new
+       (? stats)
+       (? stats)
+       (? stats) [42000-182]
+02-25 23:00:25 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Syntax error in SQL statement "UPDATE STATS_BY_DATE
+SET
+SKIP_COUNT = ?,
+DISPLAY_COUNT = ?,
+SHARE_COUNT = ?,
+LIKE_COUNT = ?,
+REPORT_COUNT = ?
+WHERE
+QUOTE_ID = ?,[*]
+DISPLAY_DATE = ? "; SQL statement:
+UPDATE stats_by_date
+SET
+skip_count = ?,
+display_count = ?,
+share_count = ?,
+like_count = ?,
+report_count = ?
+WHERE
+quote_id = ?,
+display_date = ? [42000-182]

@@ -5,6 +5,9 @@
 
 (defqueries "sql/categories.sql")
 
+(def all-quote-categories (get-all-quote-categories db-spec))
+
+
 (defn id-by-name [category]
   (let [id (:id (first (find-category-by-name db-spec category)))]
     (if (nil? id)
@@ -27,9 +30,16 @@
 
 
 (defn categories-by-quote [quote-id]
-  "Bir quote'un dahil oldugu tum kategorileri getirir."
-  (get-quote-categories db-spec quote-id))
+  "Cache'lenmis olan all-quote-categories'den category listesini getirir."
+  (set
+   (map
+    #(:category_id %)
+    (filter
+     #(= (:quote_id %) quote-id)
+     all-quote-categories))))
 
 (defn category-by-id [id]
   "Id'den kategoriyi dondurur."
   (find-category-by-id db-spec id))
+
+

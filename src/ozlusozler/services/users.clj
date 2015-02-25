@@ -34,9 +34,21 @@
       (map #(:quote_id %) quotes-seen))))
 
 
-(defn land-on-site [user-hash]
-  "TODO: users tablosunda visit_count ve last_visit'i update et."
-  )
+(defn land-on-site [& arr]
+  (let [user-hash
+        (if (or (nil? arr) (empty? arr))
+          (let [lhash (util/generate-hash)]
+            (new-user-with-hash lhash)
+            lhash)
+          (do
+            (let [tmp_hash (first arr)]
+              (when (nil? (user-id-by-hash tmp_hash))
+                (new-user-with-hash tmp_hash))
+              tmp_hash)))
+        user        (first (find-user-by-hash db-spec user-hash))
+        visit-count (+ 1 (:visit_count user))
+        now         (util/sql-now)]
+    (update-user-by-hash! db-spec visit-count now (:fast_forward_count user) user-hash)))
 
 
 (defn skip-quote [quote-id user-hash]
@@ -57,6 +69,7 @@
 (defn report-quote [quote-id user-hash]
   "TODO: implement this"
   )
+
 
 (defn set-displayed-for-user! [quote-id user-hash]
   "Quote kullanici icin goruntulendiginde bu quote bu kullanici icin

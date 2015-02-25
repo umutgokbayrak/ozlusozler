@@ -5,10 +5,10 @@
             [ozlusozler.services.users :as users]
             [ozlusozler.services.authors :as authors]
             [ozlusozler.services.categories :as categories]
+            [ozlusozler.services.stats :as stats]
             [yesql.core :refer [defqueries]]))
 
 (defqueries "sql/quotes.sql")
-
 
 ;; PRIVATE FUNCTIONS
 
@@ -49,12 +49,11 @@
 
 
 (defn- filter-by-category [quotes category-id]
-  "Quote listesi icerisinde bu kategoriden olanlari filtreler
-  TODO: performansini toparlamak gerekiyor."
+  "Quote listesi icerisinde bu kategoriden olanlari filtreler"
   (if (not (nil? category-id))
     (filter (fn [quote]
-              (let [category-ids (map #(:category_id %) (categories/categories-by-quote (:id quote)))]
-                (contains? (set category-ids) category-id )))
+              (let [categories (categories/categories-by-quote (:id quote))]
+                (contains? categories category-id )))
             quotes)
     quotes))
 
@@ -81,7 +80,7 @@
 
 (defn- populate-categories [quote]
   (let [category-ids (categories/categories-by-quote (:id quote))
-        categories   (map #(categories/category-by-id (:category_id %)) category-ids)]
+        categories   (map #(categories/category-by-id %) category-ids)]
     (if (not (nil? categories))
       (conj quote {:categories categories})
       categories)))
@@ -91,7 +90,6 @@
   "Bu quote'un bu kullanici icin gosterim yapildigina dair kayit atar"
   (let [display-count-new (+ (:display_count quote) 1)
         user-id (users/user-id-by-hash user-hash)]
-
     ; eger bu user id yoksa, henuz user yaratilmamistir.
     (when (nil? user-id)
       (users/new-user-with-hash user-hash))
@@ -102,7 +100,8 @@
     ; quote'un gosterim sayisi tum kullanicilar icin bir arttirilir.
     (update-quote-display-count! db-spec display-count-new (:id quote))
 
-    ; TODO: stats_by_date tablosuna yeni bir satir ekle veya satir zaten varsa :display_count + 1 yap
+    ; stats_by_date tablosuna yeni bir satir ekle veya satir zaten varsa :display_count + 1 yap
+    (stats/inc-display-count! (:id quote))
 
     ; display_count bir artti. Bu yeni sayiyi geri donduruyoruz
     (assoc quote :display_count display-count-new)))
@@ -142,9 +141,7 @@
 (defn get-quote [user-hash & params]
   "Find a quote to be displayed for this specific user"
 
-  ;; TODO: category id verdiyse buna gore filtrele
-  ;; TODO: author id verdiyse buna gore filtrele
-  ;; TODO: bu ip ve hash mevzuyu abuse ediyor mu kontrol et, gerekliyse yasakla
+  ; TODO: bu ip ve hash mevzuyu abuse ediyor mu kontrol et, gerekliyse yasakla
 
   (let [all-quotes   (if (env :dev) (fn-quotes) (memo-quotes))
         fallback     (filter-params all-quotes (:category-id (first params)) (:author-id (first params)))
@@ -156,10 +153,4 @@
         cats-added   (populate-categories author-added)]
     cats-added))
 
-; (get-quote "hash2" {:category-id 6})
-
-
-
-; (repeatedly 10 #(get-quote "hash2"))
-
-; (save-quote! "There is no spoon 6" "Master Yoda 2" "Wisdom")
+; (get-quote "hash2" {:category-id 6 :author-id 5})
