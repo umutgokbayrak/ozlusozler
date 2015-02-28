@@ -51,26 +51,6 @@
     (update-user-by-hash! db-spec visit-count now (:fast_forward_count user) user-hash)))
 
 
-(defn skip-quote [quote-id user-hash]
-  "TODO: implement this"
-  )
-
-
-(defn share-quote [quote-id user-hash]
-  "TODO: implement this"
-  )
-
-
-(defn like-quote [quote-id user-hash]
-  "TODO: implement this"
-  )
-
-
-(defn report-quote [quote-id user-hash]
-  "TODO: implement this"
-  )
-
-
 (defn set-displayed-for-user! [quote-id user-hash]
   "Quote kullanici icin goruntulendiginde bu quote bu kullanici icin
   tekrar goruntulenmemek uzere kayit altina alinir."
@@ -79,3 +59,39 @@
     ; Eger bu pair daha once kaydedildiyse tekrar kaydetmeye calismaya gerek yok.
     (when (not item-exists)
       (save-users-quotes! db-spec user-id quote-id false false false false))))
+
+
+(defn set-skip-flag-for-quote! [quote-id user-hash]
+  "users_quotes icerisinde bu quote'un skip edildigi notlanir"
+  (let [user-id (user-id-by-hash user-hash)
+        user-quote (first (find-users-quotes db-spec user-id quote-id))]
+    (update-users-quotes!
+     db-spec user-id quote-id
+     (true (:like_flag user-quote) (:share_flag user-quote) (:report_flag user-quote)))))
+
+
+(defn set-share-flag-for-quote! [quote-id user-hash]
+  "users_quotes icerisinde bu quote'un share edildigi notlanir"
+  (let [user-id (user-id-by-hash user-hash)
+        user-quote (first (find-users-quotes db-spec user-id quote-id))]
+    (update-users-quotes!
+     db-spec user-id quote-id
+     ((:skip_flag user-quote) (:like_flag user-quote) true (:report_flag user-quote)))))
+
+
+(defn set-like-flag-for-quote! [quote-id user-hash]
+  "users_quotes icerisinde bu quote'un like edildigi notlanir"
+  (let [user-id (user-id-by-hash user-hash)
+        user-quote (first (find-users-quotes db-spec user-id quote-id))]
+    (update-users-quotes!
+     db-spec user-id quote-id
+     ((:skip_flag user-quote) true (:share_flag user-quote) (:report_flag user-quote)))))
+
+
+(defn set-report-flag-for-quote! [quote-id user-hash]
+  "users_quotes icerisinde bu quote'un like edildigi notlanir"
+  (let [user-id (user-id-by-hash user-hash)
+        user-quote (first (find-users-quotes db-spec user-id quote-id))]
+    (update-users-quotes!
+     db-spec user-id quote-id
+     ((:skip_flag user-quote) (:like_flag user-quote) (:share_flag user-quote) true))))

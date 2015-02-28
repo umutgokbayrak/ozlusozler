@@ -66,3 +66,24 @@ INSERT INTO users_quotes
 VALUES
 (:user_id, :quote_id, :skip_flag, :like_flag, :share_flag, :report_flag)
 
+
+-- name: find-users-quotes
+-- Bu user ve quote ikilisini getirir
+SELECT *
+FROM users_quotes
+WHERE
+user_id = :user_id AND
+quote_id = :quote_id
+
+
+-- name: update-users-quotes!
+-- updates the users_quote item
+UPDATE users_quotes
+SET
+skip_flag = :set_flag,
+like_flag = :like_flag,
+share_flag = :share_flag,
+report_flag = :report_flag
+WHERE
+user_id = :user_id AND
+quote_id = :quote_id

@@ -16,6 +16,10 @@
   "hash'ten quote'u getirir."
   (first (find-quote-by-hash db-spec quote-hash)))
 
+(defn- quote-by-id [quote-id]
+  "id'ten quote'u getirir."
+  (first (find-quote-by-id db-spec quote-id)))
+
 
 (defn- fn-quotes []
   "memorize ile cache'lemek icin oncelikle fn tanimliyoruz"
@@ -86,6 +90,30 @@
       categories)))
 
 
+(defn- inc-skip-count! [quote-id]
+  (let [quote (quote-by-id quote-id)
+        skip-new (+1 (:skip_count quote))]
+    (update-quote-skip-count! db-spec skip-new (:id quote))))
+
+
+(defn- inc-share-count! [quote-id]
+  (let [quote (quote-by-id quote-id)
+        share-new (+1 (:share_count quote))]
+    (update-quote-share-count! db-spec share-new (:id quote))))
+
+
+(defn- inc-like-count! [quote-id]
+  (let [quote (quote-by-id quote-id)
+        like-new (+1 (:like_count quote))]
+    (update-quote-like-count! db-spec like-new (:id quote))))
+
+
+(defn- inc-report-count! [quote-id]
+  (let [quote (quote-by-id quote-id)
+        report-new (+1 (:report_count quote))]
+    (update-quote-report-count! db-spec report-new (:id quote))))
+
+
 (defn- set-display-stats! [quote user-hash]
   "Bu quote'un bu kullanici icin gosterim yapildigina dair kayit atar"
   (let [display-count-new (+ (:display_count quote) 1)
@@ -126,6 +154,55 @@
 
 
 ;; PUBLIC FUNCTIONS
+
+
+(defn skip-quote [quote-id user-hash]
+  "Kullanici x saniyeden az sure bir quote'a bakarsa skip etmistir."
+  ; stats_by_date icinde skip_count + 1
+  (stats/inc-skip-count! quote-id)
+
+  ; quotes icinde skip_count + 1
+  (inc-skip-count! quote-id)
+
+  ; users_quotes icinde skip_flag = true
+  (users/set-skip-flag-for-quote! quote-id user-hash))
+
+
+(defn share-quote [quote-id user-hash]
+  "Kullanici bu quote'u bir sosyal yontemle paylastiysa"
+  ; stats_by_date icinde share_count + 1
+  (stats/inc-share-count! quote-id)
+
+  ; quotes icinde share_count + 1
+  (inc-share-count! quote-id)
+
+  ; users_quotes icinde share_flag = true
+  (users/set-share-flag-for-quote! quote-id user-hash))
+
+
+(defn like-quote [quote-id user-hash]
+  "Kullanici bu quote'u begendiyse"
+  ; stats_by_date icinde like_count + 1
+  (stats/inc-like-count! quote-id)
+
+  ; quotes icinde like_count + 1
+  (inc-like-count! quote-id)
+
+  ; users_quotes icinde like_flag = true
+  (users/set-like-flag-for-quote! quote-id user-hash))
+
+
+(defn report-quote [quote-id user-hash]
+  "Kullanici bu quote'u sikayet ettiyse"
+  ; stats_by_date icinde report_count + 1
+  (stats/inc-report-count! quote-id)
+
+  ; quotes icinde report_count + 1
+  (inc-report-count! quote-id)
+
+  ; users_quotes icinde report_flag = true
+  (users/set-report-flag-for-quote! quote-id user-hash))
+
 
 (defn save-quote! [quote author category]
   "Saves the quote arranging the author, category etc..."
