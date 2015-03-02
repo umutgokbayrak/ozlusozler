@@ -1,20 +1,15 @@
 (ns ozlusozler.services.quotes
-  (:require [ozlusozler.db.schema :refer :all]
-            [environ.core :refer [env]]
-            [ozlusozler.util :as util]
-            [ozlusozler.services.users :as users]
-            [ozlusozler.services.authors :as authors]
-            [ozlusozler.services.categories :as categories]
-            [ozlusozler.services.stats :as stats]
-            [yesql.core :refer [defqueries]]))
+ (:require [ozlusozler.db.schema :refer [db-spec]]
+           [ozlusozler.util :as util]
+           [ozlusozler.services [users :as users]
+                                [authors :as authors]
+                                [categories :as categories]
+                                [stats :as stats]]
+           [yesql.core :refer [defqueries]]))
 
 (defqueries "sql/quotes.sql")
 
 ;; PRIVATE FUNCTIONS
-
-(defn- quote-by-hash [quote-hash]
-  "hash'ten quote'u getirir."
-  (first (find-quote-by-hash db-spec quote-hash)))
 
 (defn- quote-by-id [quote-id]
   "id'ten quote'u getirir."
@@ -54,10 +49,11 @@
 
 (defn- filter-by-category [quotes category-id]
   "Quote listesi icerisinde bu kategoriden olanlari filtreler"
+
   (if (not (nil? category-id))
     (filter (fn [quote]
               (let [categories (categories/categories-by-quote (:id quote))]
-                (contains? categories category-id )))
+                (contains? categories category-id)))
             quotes)
     quotes))
 
@@ -92,30 +88,31 @@
 
 (defn- inc-skip-count! [quote-id]
   (let [quote (quote-by-id quote-id)
-        skip-new (+1 (:skip_count quote))]
+        skip-new (+ 1 (:skip_count quote))]
     (update-quote-skip-count! db-spec skip-new (:id quote))))
 
 
 (defn- inc-share-count! [quote-id]
   (let [quote (quote-by-id quote-id)
-        share-new (+1 (:share_count quote))]
+        share-new (+ 1 (:share_count quote))]
     (update-quote-share-count! db-spec share-new (:id quote))))
 
 
 (defn- inc-like-count! [quote-id]
   (let [quote (quote-by-id quote-id)
-        like-new (+1 (:like_count quote))]
+        like-new (+ 1 (:like_count quote))]
     (update-quote-like-count! db-spec like-new (:id quote))))
 
 
 (defn- inc-report-count! [quote-id]
   (let [quote (quote-by-id quote-id)
-        report-new (+1 (:report_count quote))]
+        report-new (+ 1 (:report_count quote))]
     (update-quote-report-count! db-spec report-new (:id quote))))
 
 
 (defn- set-display-stats! [quote user-hash]
   "Bu quote'un bu kullanici icin gosterim yapildigina dair kayit atar"
+
   (let [display-count-new (+ (:display_count quote) 1)
         user-id (users/user-id-by-hash user-hash)]
     ; eger bu user id yoksa, henuz user yaratilmamistir.
@@ -139,21 +136,26 @@
   "Bu quote'lardan en yuksek begeni almis olanina gore sort et ve birini sec"
   (if (not (empty? quotes))
     (do
-      (let [sorted-quotes
-            (sort-by
-             #(let [like-point (* (:like_count %) 2)
-                    display-point (:display_count %)
-                    boosted-point (if (:boosted %) 5 0)
-                    share-point (* (:share_count %) 3)
-                    skip-point (* (:skip_count %) -1)
-                    report-point (* (:report_count %) -3)]
-                (+ like-point display-point boosted-point share-point skip-point report-point))
-             > (shuffle quotes))]
+      (let
+        [sorted-quotes
+         (sort-by
+          #(let [like-point (* (:like_count %) 2)
+                 display-point (:display_count %)
+                 boosted-point (if (:boosted %) 5 0)
+                 share-point (* (:share_count %) 3)
+                 skip-point (* (:skip_count %) -1)
+                 report-point (* (:report_count %) -3)]
+             (+ like-point display-point boosted-point share-point skip-point report-point))
+          > (shuffle quotes))]
         (rand-nth (take 15 sorted-quotes))))
     fallback-quotes))
 
 
 ;; PUBLIC FUNCTIONS
+
+(defn quote-by-hash [quote-hash]
+  "hash'ten quote'u getirir."
+  (first (find-quote-by-hash db-spec quote-hash)))
 
 
 (defn skip-quote [quote-id user-hash]
@@ -220,8 +222,7 @@
 
   ; TODO: bu ip ve hash mevzuyu abuse ediyor mu kontrol et, gerekliyse yasakla
 
-  (let [all-quotes   (if (env :dev) (fn-quotes) (memo-quotes))
-        fallback     (filter-params all-quotes (:category-id (first params)) (:author-id (first params)))
+  (let [fallback     (filter-params (memo-quotes) (:category-id (first params)) (:author-id (first params)))
         unreported   (filter-reported fallback)
         unseen       (filter-seen unreported user-hash)
         quote        (choose-best unseen fallback)
@@ -230,4 +231,6 @@
         cats-added   (populate-categories author-added)]
     cats-added))
 
-; (get-quote "hash2" {:category-id 6 :author-id 5})
+; (get-quote "hash2" {:category-id nil :author-id 54})
+
+; (get-quote "80bd18e84c6c2947849b8d8f07ffdb12" {:category-id  nil :author-id 54 })

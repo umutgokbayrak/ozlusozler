@@ -1,6 +1,143 @@
 html,
 body {
-	font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    height: 100%;
-    padding-top: 40px;
+	padding: 0;
+  margin: 0;
+  background-color: #fff;
+}
+
+div#container {
+  width: 850px;
+  margin: 90px auto 50px auto;
+  padding: 30px;
+  vertical-align: middle;
+  overflow-y: visible;
+  border-radius: 3px;
+}
+
+
+p.quote {
+  font-size: 52px;
+  line-height: 80px;
+  text-align: center;
+  /* font-family: 'Handlee', cursive; */
+  font-family: 'Shadows Into Light Two', cursive;
+  color: rgba(65,65,65,1.0);
+  text-shadow: 1px 1px #fefefe inset;
+  letter-spacing: 2px;
+}
+
+p.author {
+  font-size: 20px;
+  line-height: 28px;
+  text-align: center;
+  text-transform: uppercase;
+  font-family: 'Handlee', cursive;
+  color: #a0a0a0;
+  text-decoration: none;
+}
+
+div.toolbar {
+  text-align: center;
+}
+
+div.toolbar img {
+  width: 96px;
+  height: 96px;
+}
+
+
+div.toolbar img:first {
+  margin-right: 30px;
+}
+
+
+div.navbar {
+  border-top: 2px #c35;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 55px;
+  width: 100%;
+  background-color: #eee;
+}
+
+div.navbar div.logo a {
+  position: fixed;
+  top: 0px;
+  width: 230px;
+  left: 40px;
+  background-color: #c35;
+  color: #fff;
+  border-radius: 0px 0px 4px 4px;
+  -moz-border-radius: 0px 0px 4px 4px;
+  -webkit-border-radius: 0px 0px 4px 4px;
+  border: 0px solid #000000;
+  font-family: 'Satisfy', cursive;
+  font-size: 42px;
+  font-weight: bold;
+  padding-left: 14px;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  text-decoration: none;
+}
+
+
+div.navbar div.logo a:hover {
+  background-color: #9E1C39;
+}
+
+div.navbar div.slogan {
+  position: fixed;
+  right: 20px;
+  top: 13px;
+  font-size: 20px;
+  color: #a0a0a0;
+  font-family: 'Titillium Web', sans-serif;
+  font-weight: 400;
+}
+
+div.share {
+  position: fixed;
+  right: 20px;
+  top: 70px;
+}
+
+div.toolbar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  height: 80px;
+  width: 100%;
+  background-color: #fbfbfb;
+  border-top: 1px solid #f0f0f0;
+}
+
+div.toolbar a.button {
+  background-color: #c35;
+  padding: 16px;
+  width: 140px;
+  color: #fff;
+  font-family: 'Titillium Web', sans-serif;
+  font-size: 24px;
+  border-radius: 12px;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+div.toolbar a.like {
+  background-color: #74C750;
+}
+
+div.toolbar a.like:hover {
+  background-color: #60E328;
+}
+
+
+div.toolbar a.dislike {
+  align: left;
+  background-color: #CD6371;
+}
+
+div.toolbar a.dislike:hover {
+  background-color: #EE0D3F;
 }

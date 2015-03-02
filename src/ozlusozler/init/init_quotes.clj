@@ -1,6 +1,7 @@
-(ns ozlusozler.services.quotes
+(ns ozlusozler.init.init-quotes
   (:use     [clojure.java.io])
   (:require [ozlusozler.services.quotes :as quotes]))
+
 
 (def category-atom (atom "Genel"))
 
@@ -21,7 +22,7 @@
                            left-trim))
               author    (.trim (second arr))
               category  (.trim @category-atom)]
-          (save-quote! quote author @category-atom)
+          (quotes/save-quote! quote author @category-atom)
       ))))))
 
 

@@ -38,6 +38,7 @@
   (let [user-hash
         (if (or (nil? arr) (empty? arr))
           (let [lhash (util/generate-hash)]
+            (println "lhash: " lhash)
             (new-user-with-hash lhash)
             lhash)
           (do
@@ -48,7 +49,8 @@
         user        (first (find-user-by-hash db-spec user-hash))
         visit-count (+ 1 (:visit_count user))
         now         (util/sql-now)]
-    (update-user-by-hash! db-spec visit-count now (:fast_forward_count user) user-hash)))
+    (update-user-by-hash! db-spec visit-count now (:fast_forward_count user) user-hash)
+    user-hash))
 
 
 (defn set-displayed-for-user! [quote-id user-hash]
@@ -67,7 +69,7 @@
         user-quote (first (find-users-quotes db-spec user-id quote-id))]
     (update-users-quotes!
      db-spec user-id quote-id
-     (true (:like_flag user-quote) (:share_flag user-quote) (:report_flag user-quote)))))
+     true (:like_flag user-quote) (:share_flag user-quote) (:report_flag user-quote))))
 
 
 (defn set-share-flag-for-quote! [quote-id user-hash]
@@ -76,16 +78,15 @@
         user-quote (first (find-users-quotes db-spec user-id quote-id))]
     (update-users-quotes!
      db-spec user-id quote-id
-     ((:skip_flag user-quote) (:like_flag user-quote) true (:report_flag user-quote)))))
+     (:skip_flag user-quote) (:like_flag user-quote) true (:report_flag user-quote))))
 
 
 (defn set-like-flag-for-quote! [quote-id user-hash]
   "users_quotes icerisinde bu quote'un like edildigi notlanir"
   (let [user-id (user-id-by-hash user-hash)
         user-quote (first (find-users-quotes db-spec user-id quote-id))]
-    (update-users-quotes!
-     db-spec user-id quote-id
-     ((:skip_flag user-quote) true (:share_flag user-quote) (:report_flag user-quote)))))
+    (update-users-quotes! db-spec user-id quote-id
+     (:skip_flag user-quote) true (:share_flag user-quote) (:report_flag user-quote))))
 
 
 (defn set-report-flag-for-quote! [quote-id user-hash]
@@ -94,4 +95,4 @@
         user-quote (first (find-users-quotes db-spec user-id quote-id))]
     (update-users-quotes!
      db-spec user-id quote-id
-     ((:skip_flag user-quote) (:like_flag user-quote) (:share_flag user-quote) true))))
+     (:skip_flag user-quote) (:like_flag user-quote) (:share_flag user-quote) true)))

@@ -29,3 +29,6 @@
    (java.text.SimpleDateFormat. "yyyy-MM-dd")
    (java.util.Date.
     (.getTime date))))
+
+(defn cookie-expire []
+  "Wed, 31 Oct 2089 08:50:17 GMT")

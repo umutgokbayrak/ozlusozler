@@ -1,0 +1,6 @@
+target
+.lein-env
+.nrepl-port
+ozlusozler.log
+resources/public/js/out
+target/stale
