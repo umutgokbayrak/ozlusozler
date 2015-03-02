@@ -1,4 +1,4 @@
-target
+^target$
 .lein-env
 .nrepl-port
 ozlusozler.log
