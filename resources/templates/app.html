@@ -1,6 +1,26 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0 , maximum-scale=1.0, user-scalable=no">
+        <link rel="apple-touch-icon" sizes="57x57" href="/apple-icon-57x57.png">
+        <link rel="apple-touch-icon" sizes="60x60" href="/apple-icon-60x60.png">
+        <link rel="apple-touch-icon" sizes="72x72" href="/apple-icon-72x72.png">
+        <link rel="apple-touch-icon" sizes="76x76" href="/apple-icon-76x76.png">
+        <link rel="apple-touch-icon" sizes="114x114" href="/apple-icon-114x114.png">
+        <link rel="apple-touch-icon" sizes="120x120" href="/apple-icon-120x120.png">
+        <link rel="apple-touch-icon" sizes="144x144" href="/apple-icon-144x144.png">
+        <link rel="apple-touch-icon" sizes="152x152" href="/apple-icon-152x152.png">
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-icon-180x180.png">
+        <link rel="icon" type="image/png" sizes="192x192"  href="/android-icon-192x192.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+        <link rel="manifest" href="/manifest.json">
+        <meta name="msapplication-TileColor" content="#ffffff">
+        <meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
+        <meta name="theme-color" content="#ffffff">
+        <link rel="apple-touch-startup-image" href="/splash-screen.png" />
         <title>ÖzlüSözler.io - Motivasyon lazım olduğunda...</title>
     </head>
     <body>
@@ -26,11 +46,20 @@
             <div class="addthis_sharing_toolbox"></div>
         </div>
 
+        <div class="fallback" style="display:none;">
+            Bu site için daha büyük bir ekran boyutuna ihtiyacınız var.
+        </div>
+
         <!-- 5 saniyeden az surede yeni soz'e tiklarsa skip olur -->
         <!-- Implement share quote -->
 
         <!-- scripts and styles -->
-        {% style "/css/screen.css" %}
+        <link rel="stylesheet" media="screen" href="/css/screen.css">
+        <link media="only screen and (max-device-width: 800px) and (min-device-width: 370px)" href="/css/mobile.css" type="text/css" rel="stylesheet" />
+        <link media="only screen and (max-device-width: 1030px) and (min-device-width: 800px)" href="/css/tablet.css" type="text/css" rel="stylesheet" />
+        <link media="only screen and (max-device-width: 370px) and (min-device-width: 300px)" href="/css/handheld.css" type="text/css" rel="stylesheet" />
+        <link media="only screen and (max-device-width: 300px)" href="/css/fallback.css" type="text/css" rel="stylesheet" />
+
 
         <link href='//fonts.googleapis.com/css?family=Handlee' rel='stylesheet' type='text/css'>
         <link href='http://fonts.googleapis.com/css?family=Satisfy' rel='stylesheet' type='text/css'>

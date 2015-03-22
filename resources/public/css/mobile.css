@@ -1,0 +1,24 @@
+div.navbar div.slogan, div.share {
+  display: none !important;
+}
+
+div#container {
+  margin: 30px auto 50px auto;
+}
+
+
+p.quote {
+  font-size: 46px;
+  line-height: 64px;
+}
+
+div.navbar div.logo a {
+  left: 0px;
+  font-size: 34px;
+  width: 100%;
+}
+
+div.navbar {
+  border: none;
+  background-color: #fff;
+}

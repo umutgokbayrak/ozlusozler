@@ -6,8 +6,9 @@ body {
 }
 
 div#container {
-  width: 850px;
-  margin: 90px auto 50px auto;
+  width: 80%;
+  max-width: 850px;
+  margin: 70px auto 50px auto;
   padding: 30px;
   vertical-align: middle;
   overflow-y: visible;
@@ -16,8 +17,8 @@ div#container {
 
 
 p.quote {
-  font-size: 52px;
-  line-height: 80px;
+  font-size: 48px;
+  line-height: 78px;
   text-align: center;
   /* font-family: 'Handlee', cursive; */
   font-family: 'Shadows Into Light Two', cursive;
@@ -140,4 +141,8 @@ div.toolbar a.dislike {
 
 div.toolbar a.dislike:hover {
   background-color: #EE0D3F;
+}
+
+div.fallback {
+  display: none;
 }

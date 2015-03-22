@@ -1,0 +1,35 @@
+div.navbar div.slogan, div.share {
+  display: none !important;
+}
+
+div#container {
+  margin: 20px auto 40px auto;
+}
+
+p.quote {
+  font-size: 32px;
+  line-height: 48px;
+}
+
+div.toolbar {
+  height: 60px;
+}
+
+
+div.toolbar a.button {
+  padding: 16px;
+  width: 100px;
+  font-size: 16px;
+  border-radius: 8px;
+}
+
+div.navbar div.logo a {
+  left: 0px;
+  font-size: 24px;
+  width: 100%;
+}
+
+div.navbar {
+  border: none;
+  background-color: #fff;
+}
